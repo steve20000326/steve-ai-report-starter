@@ -1,0 +1,70 @@
+.page {
+  min-height: 100vh;
+  padding: 32rpx;
+  box-sizing: border-box;
+}
+
+.page-intro {
+  margin-bottom: 32rpx;
+}
+
+.intro-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #26352C;
+  margin-bottom: 12rpx;
+}
+
+.intro-desc {
+  font-size: 26rpx;
+  color: #7C857F;
+  line-height: 1.6;
+}
+
+.form {
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  padding: 8rpx 32rpx;
+}
+
+.form-item {
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #F0F0ED;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #7C857F;
+  margin-bottom: 16rpx;
+}
+
+.required {
+  color: #C47A6E;
+  font-size: 22rpx;
+}
+
+.hint {
+  font-size: 22rpx;
+  color: #C5D5CA;
+  font-weight: normal;
+}
+
+.input,
+.picker {
+  font-size: 30rpx;
+  color: #26352C;
+}
+
+.submit-btn {
+  margin-top: 48rpx;
+  height: 92rpx;
+  line-height: 92rpx;
+  background: #65A87C !important;
+  color: #fff !important;
+  border-radius: 48rpx;
+  font-size: 30rpx;
+}

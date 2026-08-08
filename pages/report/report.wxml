@@ -1,0 +1,159 @@
+<view class="page">
+  <view wx:if="{{loading && !isGenerating}}" class="status">加载中…</view>
+  <view wx:elif="{{error}}" class="status error">{{error}}</view>
+
+  <view wx:elif="{{isGenerating}}" class="generating">
+    <view class="loading-title">正在帮你整理这个成长瞬间……</view>
+    <view class="loading-steps">
+      <view class="step {{loadingStep >= 0 ? 'done' : ''}}">
+        {{loadingStep >= 0 ? '✓' : '○'}} 理解发生了什么
+      </view>
+      <view class="step {{loadingStep >= 1 ? 'done' : ''}}">
+        {{loadingStep >= 1 ? '✓' : '○'}} 寻找值得留下的成长信号
+      </view>
+      <view class="step {{loadingStep >= 2 ? 'done' : ''}}">
+        {{loadingStep >= 2 ? '✓' : '○'}} 整理给父母的回应建议
+      </view>
+    </view>
+    <view class="loading-note">
+      每个孩子都有自己的成长节奏，我们只记录，不给孩子贴标签。
+    </view>
+  </view>
+
+  <view wx:elif="{{isFailed}}" class="failed">
+    <view class="failed-title">这次没能整理好</view>
+    <view class="failed-desc">没关系，原始记录还在，可以重新整理。</view>
+    <view class="input-block" wx:if="{{input}}">
+      <view class="block-label">原始记录</view>
+      <view class="input-row" wx:if="{{input.name}}">孩子：{{input.name}}</view>
+      <view class="input-row" wx:if="{{input.eventDate}}">日期：{{input.eventDate}}</view>
+      <view class="input-row">{{input.eventText || input.description}}</view>
+    </view>
+    <button wx:if="{{canRetry}}" class="btn-primary" loading="{{retrying}}" bindtap="onRetry">
+      重新整理
+    </button>
+    <view wx:else class="retry-limit">已达重试上限，请稍后再试</view>
+  </view>
+
+  <view wx:elif="{{isSuccess}}" class="report">
+    <view class="report-header">
+      <view class="page-title">{{view.pageTitle}}</view>
+      <view class="date-text">{{dateText}}</view>
+    </view>
+
+    <view class="emotion-title">{{view.emotionTitle}}</view>
+
+    <view class="section">
+      <view class="section-label">今天发生了什么</view>
+      <view class="section-body">{{view.factSummary}}</view>
+    </view>
+
+    <view class="section highlight">
+      <view class="section-label">这件小事，让我们看见……</view>
+      <view class="section-body">{{view.growthObservation}}</view>
+    </view>
+
+    <view class="section" wx:if="{{view.confidenceNote}}">
+      <view class="confidence-note">{{view.confidenceNote}}</view>
+    </view>
+
+    <view class="section" wx:if="{{view.keywords.length}}">
+      <view class="section-label">今天的成长关键词</view>
+      <view class="keywords">
+        <text class="kw" wx:for="{{view.keywords}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-label">爸爸妈妈可以这样回应</view>
+      <view class="response-box">{{view.parentResponse}}</view>
+    </view>
+
+    <view class="section">
+      <view class="section-label">留下一个小期待</view>
+      <view class="section-body">{{view.nextSuggestion}}</view>
+    </view>
+
+    <view class="warm-box" wx:if="{{view.warmSentence}}">
+      <text>{{view.warmSentence}}</text>
+    </view>
+
+    <!-- 反馈 -->
+    <view class="feedback-section" wx:if="{{!feedbackSubmitted}}">
+      <view class="feedback-title">这次整理对你有帮助吗？</view>
+      <view class="feedback-btns">
+        <view
+          class="fb-btn {{feedbackRating === 'helpful' ? 'active' : ''}}"
+          data-rating="helpful"
+          bindtap="onFeedbackSelect"
+        >有帮助</view>
+        <view
+          class="fb-btn {{feedbackRating === 'normal' ? 'active' : ''}}"
+          data-rating="normal"
+          bindtap="onFeedbackSelect"
+        >一般</view>
+        <view
+          class="fb-btn {{feedbackRating === 'not_helpful' ? 'active' : ''}}"
+          data-rating="not_helpful"
+          bindtap="onFeedbackSelect"
+        >帮助不大</view>
+      </view>
+      <textarea
+        class="feedback-comment"
+        placeholder="想说的话（选填，200字以内）"
+        maxlength="200"
+        value="{{feedbackComment}}"
+        bindinput="onFeedbackCommentInput"
+      />
+      <button
+        class="btn-feedback"
+        loading="{{feedbackSubmitting}}"
+        bindtap="onSubmitFeedback"
+      >提交反馈</button>
+    </view>
+    <view class="feedback-done" wx:else>感谢你的反馈 ❤️</view>
+
+    <view class="footer-actions">
+      <button class="btn-secondary" bindtap="onSaveArchive">保存到成长档案</button>
+      <button class="btn-primary" bindtap="onShowCardPreview">生成成长卡片</button>
+    </view>
+  </view>
+
+  <!-- 隐私选择 -->
+  <view class="card-modal" wx:if="{{showPrivacyModal}}">
+    <view class="card-preview">
+      <view class="preview-title">分享前请选择隐私设置</view>
+      <view
+        class="privacy-option {{privacyMode === item.id ? 'selected' : ''}}"
+        wx:for="{{privacyOptions}}"
+        wx:key="id"
+        data-mode="{{item.id}}"
+        bindtap="onPrivacySelect"
+      >
+        {{item.label}}
+        <text wx:if="{{item.id === 'mask'}}" class="default-tag">默认</text>
+      </view>
+      <view class="modal-actions">
+        <button class="btn-cancel" bindtap="onClosePrivacyModal">取消</button>
+        <button class="btn-primary" loading="{{cardGenerating}}" bindtap="onConfirmGenerateCard">
+          生成卡片
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 卡片结果 -->
+  <view class="card-modal" wx:if="{{showCardResult}}">
+    <view class="card-preview">
+      <view class="preview-title">成长卡片</view>
+      <image class="card-image" src="{{cardImagePath}}" mode="widthFix" />
+      <view class="modal-actions">
+        <button class="btn-secondary" bindtap="onCloseCardResult">关闭</button>
+        <button class="btn-primary" bindtap="onSaveCardImage">保存到相册</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐藏 Canvas -->
+  <canvas type="2d" id="shareCanvas" class="hidden-canvas"></canvas>
+</view>

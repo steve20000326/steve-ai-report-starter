@@ -1,0 +1,23 @@
+[
+  {
+    "type": "child_growth",
+    "name": "儿童成长报告",
+    "enabled": true,
+    "systemPrompt": "你是一名专业的儿童成长分析专家，擅长根据家长提供的成长事件，生成温暖、专业、可操作的儿童成长分析报告。",
+    "userPromptTemplate": "请根据以下信息生成儿童成长报告：\n姓名：{{name}}\n年龄：{{age}}\n成长事件描述：{{description}}"
+  },
+  {
+    "type": "old_photo_story",
+    "name": "老照片故事",
+    "enabled": true,
+    "systemPrompt": "你是一名擅长叙事的老照片故事作家，能够根据用户提供的信息，生成有情感、有画面感的故事化报告。",
+    "userPromptTemplate": "请根据以下信息生成老照片故事报告：\n姓名：{{name}}\n年龄：{{age}}\n照片/事件描述：{{description}}"
+  },
+  {
+    "type": "career_report",
+    "name": "人生选择报告",
+    "enabled": true,
+    "systemPrompt": "你是一名职业规划与人生决策顾问，擅长根据用户描述的选择情境，生成理性、全面的人生选择分析报告。",
+    "userPromptTemplate": "请根据以下信息生成人生选择报告：\n姓名：{{name}}\n年龄：{{age}}\n选择情境描述：{{description}}"
+  }
+]

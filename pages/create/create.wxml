@@ -1,0 +1,95 @@
+<view class="page">
+  <view class="first-banner" wx:if="{{isFirstRecord}}">
+    欢迎！记录第一件成长小事吧 ✨
+  </view>
+
+  <view class="header">
+    <view class="page-title">今天，有什么值得记住？</view>
+    <view class="child-info" wx:if="{{childName}}">
+      {{childName}}<text wx:if="{{childAgeText}}"> · {{childAgeText}}</text>
+    </view>
+  </view>
+
+  <view class="input-area">
+    <view class="input-label">今天发生了什么？</view>
+    <textarea
+      class="main-input"
+      placeholder="比如：&#10;今天第一次主动整理书包；&#10;被同学误解后，没有发脾气，而是主动解释……"
+      value="{{eventText}}"
+      bindinput="onEventTextInput"
+      maxlength="500"
+      show-confirm-bar="{{false}}"
+      auto-height
+    />
+    <view class="input-hint">不需要写得完整，像聊天一样告诉我就可以。</view>
+  </view>
+
+  <view class="quick-tags">
+    <view
+      class="tag-item {{activeTag === item.id ? 'active' : ''}}"
+      wx:for="{{quickTags}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      data-label="{{item.label}}"
+      bindtap="onTagTap"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <view class="optional-note">
+    <view class="input-label">补充说明（选填）</view>
+    <textarea
+      class="note-input"
+      placeholder="有什么想补充的背景或感受？"
+      value="{{parentNote}}"
+      bindinput="onParentNoteInput"
+      maxlength="200"
+      show-confirm-bar="{{false}}"
+    />
+  </view>
+
+  <!-- TEST_MODE 测试事件 -->
+  <view class="test-panel" wx:if="{{testMode}}">
+    <view class="test-label">开发测试 · 快捷填充</view>
+    <view
+      class="test-item"
+      wx:for="{{testEvents}}"
+      wx:key="id"
+      data-index="{{index}}"
+      bindtap="onTestEventTap"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <button
+    class="submit-btn"
+    loading="{{loading}}"
+    disabled="{{loading || !canCreate}}"
+    bindtap="onSubmit"
+  >
+    {{canCreate ? '帮我整理这个成长瞬间' : '体验额度已用完'}}
+  </button>
+
+  <view class="loading-overlay" wx:if="{{generating}}">
+    <view class="loading-card">
+      <view class="loading-title">正在帮你整理这个成长瞬间……</view>
+      <view class="loading-steps">
+        <view class="step {{loadingStep >= 0 ? 'done' : ''}}">
+          {{loadingStep >= 0 ? '✓' : '○'}} 理解发生了什么
+        </view>
+        <view class="step {{loadingStep >= 1 ? 'done' : ''}}">
+          {{loadingStep >= 1 ? '✓' : '○'}} 寻找值得留下的成长信号
+        </view>
+        <view class="step {{loadingStep >= 2 ? 'done' : ''}}">
+          {{loadingStep >= 2 ? '✓' : '○'}} 整理给父母的回应建议
+        </view>
+      </view>
+      <view class="loading-note">
+        每个孩子都有自己的成长节奏，
+        我们只记录，不给孩子贴标签。
+      </view>
+    </view>
+  </view>
+</view>

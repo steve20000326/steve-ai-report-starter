@@ -1,0 +1,32 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+
+  <view wx:elif="{{!hasData}}" class="empty-state">
+    <view class="empty-title">成长故事还没有开始</view>
+    <view class="empty-desc">
+      今天孩子有没有哪一个小瞬间，
+      让你觉得「他好像又长大了一点」？
+    </view>
+    <button class="btn-primary" bindtap="onCreateFirst">记录第一件事</button>
+  </view>
+
+  <view wx:else class="timeline">
+    <view class="month-group" wx:for="{{monthGroups}}" wx:key="month">
+      <view class="month-label">{{item.month}}</view>
+      <view
+        class="record-item {{record.isFailed ? 'failed' : ''}} {{record.isGenerating ? 'weak' : ''}}"
+        wx:for="{{item.items}}"
+        wx:for-item="record"
+        wx:key="_id"
+        data-id="{{record._id}}"
+        bindtap="onReportTap"
+      >
+        <view class="record-date">{{record.dateText}}</view>
+        <view class="record-title">{{record.displayTitle}}</view>
+        <view class="record-keywords" wx:if="{{record.keywords.length}}">
+          <text class="kw" wx:for="{{record.keywords}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
