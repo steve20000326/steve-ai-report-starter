@@ -1,0 +1,66 @@
+<view class="page">
+  <view wx:if="{{loading && !isGenerating}}" class="status">加载中…</view>
+
+  <view wx:elif="{{isGenerating}}" class="generating">
+    <view class="loading-title">正在整理这段旧时光……</view>
+    <view class="step {{loadingStep >= 0 ? 'done' : ''}}">{{loadingStep >= 0 ? '✓' : '○'}} 把你提供的记忆整理清楚</view>
+    <view class="step {{loadingStep >= 1 ? 'done' : ''}}">{{loadingStep >= 1 ? '✓' : '○'}} 保留真实的人和事</view>
+    <view class="step {{loadingStep >= 2 ? 'done' : ''}}">{{loadingStep >= 2 ? '✓' : '○'}} 把它写成一段值得留下的故事</view>
+    <view class="loading-note">我不会替你编造照片里没有说过的往事。</view>
+  </view>
+
+  <view wx:elif="{{isFailed}}" class="failed">
+    <view class="failed-title">这次没能写好</view>
+    <view class="failed-desc">你的记忆还在，可以重新整理。</view>
+    <button class="btn-primary" wx:if="{{canRetry}}" bindtap="onRetry">重新整理</button>
+  </view>
+
+  <view wx:elif="{{isSuccess}}" class="story">
+    <view class="subtitle">{{view.subtitle}}</view>
+
+    <image wx:if="{{photoUrl}}" class="photo" src="{{photoUrl}}" mode="widthFix" />
+
+    <view class="title">{{view.title}}</view>
+    <view class="opening">{{view.opening}}</view>
+    <view class="story-body">{{view.story}}</view>
+
+    <view class="details" wx:if="{{view.memoryDetails.length}}">
+      <view class="details-label">你提供的记忆要点</view>
+      <view class="detail-item" wx:for="{{view.memoryDetails}}" wx:key="*this">· {{item}}</view>
+    </view>
+
+    <view class="closing">{{view.closing}}</view>
+
+    <view class="fact-note" wx:if="{{view.factNote}}">{{view.factNote}}</view>
+
+    <view class="feedback" wx:if="{{!feedbackSubmitted}}">
+      <view class="feedback-title">这段故事，像你记忆里的那件事吗？</view>
+      <view class="fb-btns">
+        <view class="fb-btn {{feedbackRating === 'very_similar' ? 'on' : ''}}" data-rating="very_similar" bindtap="onFeedbackSelect">很像</view>
+        <view class="fb-btn {{feedbackRating === 'mostly_similar' ? 'on' : ''}}" data-rating="mostly_similar" bindtap="onFeedbackSelect">大致像</view>
+        <view class="fb-btn {{feedbackRating === 'not_similar' ? 'on' : ''}}" data-rating="not_similar" bindtap="onFeedbackSelect">不太像</view>
+      </view>
+      <textarea class="fb-comment" placeholder="想说的话（选填）" maxlength="200" value="{{feedbackComment}}" bindinput="onFeedbackComment" />
+      <button class="btn-secondary" loading="{{feedbackSubmitting}}" bindtap="onSubmitFeedback">提交反馈</button>
+    </view>
+    <view class="feedback-done" wx:else>感谢你的反馈</view>
+
+    <view class="footer">
+      <button class="btn-secondary" bindtap="onSaveStory">保存故事</button>
+      <button class="btn-primary" loading="{{cardGenerating}}" bindtap="onGenerateCard">生成故事卡</button>
+    </view>
+  </view>
+
+  <view class="modal" wx:if="{{showCardResult}}">
+    <view class="modal-body">
+      <view class="modal-title">故事卡</view>
+      <image class="card-img" src="{{cardImagePath}}" mode="widthFix" />
+      <view class="modal-actions">
+        <button class="btn-secondary" bindtap="onCloseCard">关闭</button>
+        <button class="btn-primary" bindtap="onSaveCard">保存到相册</button>
+      </view>
+    </view>
+  </view>
+
+  <canvas type="2d" id="storyShareCanvas" class="hidden-canvas"></canvas>
+</view>

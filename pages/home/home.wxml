@@ -1,0 +1,27 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">稻歌AI实验室</view>
+    <view class="hero-sub">帮助家庭解决：</view>
+    <view class="hero-tags">
+      <text class="tag">教育成长</text>
+      <text class="tag">高考规划</text>
+      <text class="tag">家庭记忆整理</text>
+    </view>
+  </view>
+
+  <view class="tool-list">
+    <view
+      class="tool-card"
+      wx:for="{{tools}}"
+      wx:key="id"
+      data-route="{{item.route}}"
+      bindtap="onToolTap"
+    >
+      <view class="tool-head">
+        <text class="tool-name">{{item.name}}</text>
+      </view>
+      <view class="tool-desc">{{item.desc}}</view>
+      <button class="tool-btn" catchtap="onToolTap" data-route="{{item.route}}">立即体验</button>
+    </view>
+  </view>
+</view>

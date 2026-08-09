@@ -2,7 +2,11 @@
  * AI 响应 JSON 解析与校验（兼容 child_growth 新结构与通用 sections 结构）
  */
 
-const { REPORT_OUTPUT_SCHEMA, CHILD_GROWTH_OUTPUT_SCHEMA } = require('./reportEngine')
+const {
+  REPORT_OUTPUT_SCHEMA,
+  CHILD_GROWTH_OUTPUT_SCHEMA,
+  OLD_PHOTO_STORY_OUTPUT_SCHEMA
+} = require('./reportEngine')
 
 function parseJsonFromText(text) {
   if (!text || typeof text !== 'string') {
@@ -149,10 +153,51 @@ function validateReportOutput(data) {
   return validateGenericReportOutput(data)
 }
 
+function validateOldPhotoStoryOutput(data) {
+  if (!data || typeof data !== 'object') {
+    throw new Error('AI 输出不是有效 JSON 对象')
+  }
+
+  const required = ['title', 'subtitle', 'opening', 'story', 'closing', 'shareExcerpt']
+  for (let i = 0; i < required.length; i++) {
+    const field = required[i]
+    if (!data[field] || !String(data[field]).trim()) {
+      throw new Error('AI 输出缺少字段: ' + field)
+    }
+  }
+
+  if (!Array.isArray(data.memoryDetails)) {
+    throw new Error('AI 输出 memoryDetails 必须是数组')
+  }
+
+  const story = String(data.story).trim()
+  if (story.length < 100) {
+    throw new Error('AI 输出 story 过短')
+  }
+
+  return {
+    title: String(data.title).trim(),
+    subtitle: String(data.subtitle).trim(),
+    opening: String(data.opening).trim(),
+    story: story,
+    memoryDetails: data.memoryDetails.map(String).slice(0, 8),
+    closing: String(data.closing).trim(),
+    shareExcerpt: String(data.shareExcerpt).trim(),
+    factNote: data.factNote ? String(data.factNote).trim() : '',
+    summary: String(data.shareExcerpt).trim(),
+    keywords: [],
+    sections: [],
+    suggestions: []
+  }
+}
+
 function parseReportJson(text, type) {
   const parsed = parseJsonFromText(text)
   if (type === 'child_growth') {
     return validateChildGrowthOutput(parsed)
+  }
+  if (type === 'old_photo_story') {
+    return validateOldPhotoStoryOutput(parsed)
   }
   return validateGenericReportOutput(parsed)
 }
@@ -164,5 +209,6 @@ module.exports = {
   validateReportOutput,
   validateGenericReportOutput,
   validateChildGrowthOutput,
+  validateOldPhotoStoryOutput,
   parseReportJson
 }

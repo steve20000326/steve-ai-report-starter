@@ -1,13 +1,31 @@
 /**
  * 用户免费额度（users.freeQuota）
+ * old_photo_story：第一篇免费，之后消耗 shared freeQuota
  */
 
-const { COLLECTIONS, isCollectionMissingError } = require('./reportEngine')
+const { COLLECTIONS, isCollectionMissingError, REPORT_STATUS } = require('./reportEngine')
 const { DEFAULT_FREE_QUOTA } = require('./quotaConfig')
 
 function getDefaultQuotaValue() {
   const envVal = Number(process.env.DEFAULT_FREE_QUOTA)
   return envVal > 0 ? envVal : DEFAULT_FREE_QUOTA
+}
+
+async function countSuccessReports(db, openid, type) {
+  try {
+    const result = await db
+      .collection(COLLECTIONS.REPORTS)
+      .where({
+        openid,
+        type,
+        status: REPORT_STATUS.SUCCESS
+      })
+      .count()
+    return result.total || 0
+  } catch (err) {
+    if (isCollectionMissingError(err)) return 0
+    throw err
+  }
 }
 
 async function getOrInitUser(db, openid) {
@@ -40,17 +58,42 @@ async function getOrInitUser(db, openid) {
   return Object.assign({ _id: addResult._id }, data)
 }
 
-async function checkUserQuota(db, openid) {
-  try {
-    const user = await getOrInitUser(db, openid)
-    const total = getDefaultQuotaValue()
-    const remaining = typeof user.freeQuota === 'number' ? user.freeQuota : total
-    return {
+function buildQuotaResponse(remaining, extra) {
+  const total = getDefaultQuotaValue()
+  return Object.assign(
+    {
       totalQuota: total,
       usedQuota: total - remaining,
       remainingQuota: Math.max(0, remaining),
       canCreate: remaining > 0
+    },
+    extra || {}
+  )
+}
+
+async function checkUserQuota(db, openid, productType) {
+  try {
+    const user = await getOrInitUser(db, openid)
+    const total = getDefaultQuotaValue()
+    const remaining = typeof user.freeQuota === 'number' ? user.freeQuota : total
+
+    if (productType === 'old_photo_story') {
+      const photoCount = await countSuccessReports(db, openid, 'old_photo_story')
+      if (photoCount === 0) {
+        return buildQuotaResponse(remaining, {
+          canCreate: true,
+          firstPhotoFree: true,
+          photoStoryCount: photoCount
+        })
+      }
+      return buildQuotaResponse(remaining, {
+        firstPhotoFree: false,
+        photoStoryCount: photoCount,
+        canCreate: remaining > 0
+      })
     }
+
+    return buildQuotaResponse(remaining, { canCreate: remaining > 0 })
   } catch (err) {
     if (isCollectionMissingError(err)) {
       throw new Error('请先在云开发控制台创建 users 集合')
@@ -59,7 +102,21 @@ async function checkUserQuota(db, openid) {
   }
 }
 
-async function consumeUserQuota(db, openid) {
+async function consumeUserQuota(db, openid, productType) {
+  if (productType === 'old_photo_story') {
+    const photoCount = await countSuccessReports(db, openid, 'old_photo_story')
+    if (photoCount <= 1) {
+      const user = await getOrInitUser(db, openid)
+      const remaining = typeof user.freeQuota === 'number' ? user.freeQuota : getDefaultQuotaValue()
+      return buildQuotaResponse(remaining, {
+        canCreate: true,
+        firstPhotoFree: photoCount === 0,
+        photoStoryCount: photoCount,
+        quotaConsumed: false
+      })
+    }
+  }
+
   const user = await getOrInitUser(db, openid)
   const remaining = typeof user.freeQuota === 'number' ? user.freeQuota : getDefaultQuotaValue()
 
@@ -90,18 +147,13 @@ async function consumeUserQuota(db, openid) {
   }
 
   const newRemaining = remaining - 1
-  const total = getDefaultQuotaValue()
-  return {
-    totalQuota: total,
-    usedQuota: total - newRemaining,
-    remainingQuota: newRemaining,
-    canCreate: newRemaining > 0
-  }
+  return buildQuotaResponse(newRemaining, { canCreate: newRemaining > 0, quotaConsumed: true })
 }
 
 module.exports = {
   getOrInitUser,
   checkUserQuota,
   consumeUserQuota,
+  countSuccessReports,
   getDefaultQuotaValue
 }

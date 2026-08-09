@@ -1,14 +1,17 @@
+/**
+ * DeepSeek API 调用
+ * 模型优先级：TEXT_MODEL > DEEPSEEK_MODEL > 默认 deepseek-v4-flash
+ */
+
 const https = require('https')
 
 const DEFAULT_API_URL = 'https://api.deepseek.com/v1/chat/completions'
-const DEFAULT_MODEL = 'deepseek-chat'
+const DEFAULT_TEXT_MODEL = 'deepseek-v4-flash'
 
-/**
- * 调用 DeepSeek Chat Completions API
- * @param {object} options
- * @param {Array} options.messages
- * @returns {Promise<string>}
- */
+function getTextModel() {
+  return process.env.TEXT_MODEL || process.env.DEEPSEEK_MODEL || DEFAULT_TEXT_MODEL
+}
+
 function callDeepSeek(options) {
   const apiKey = process.env.DEEPSEEK_API_KEY
   if (!apiKey) {
@@ -16,14 +19,14 @@ function callDeepSeek(options) {
   }
 
   const apiUrl = process.env.DEEPSEEK_API_URL || DEFAULT_API_URL
-  const model = process.env.DEEPSEEK_MODEL || DEFAULT_MODEL
+  const model = getTextModel()
   const url = new URL(apiUrl)
 
   const payload = JSON.stringify({
     model: model,
     messages: options.messages,
     response_format: { type: 'json_object' },
-    temperature: 0.7
+    temperature: options.temperature !== undefined ? options.temperature : 0.7
   })
 
   const requestOptions = {
@@ -57,9 +60,10 @@ function callDeepSeek(options) {
             return reject(new Error(errMsg))
           }
 
-          const content = parsed.choices && parsed.choices[0] && parsed.choices[0].message
-            ? parsed.choices[0].message.content
-            : ''
+          const content =
+            parsed.choices && parsed.choices[0] && parsed.choices[0].message
+              ? parsed.choices[0].message.content
+              : ''
 
           if (!content) {
             return reject(new Error('DeepSeek API 返回内容为空'))
@@ -87,5 +91,6 @@ function callDeepSeek(options) {
 }
 
 module.exports = {
-  callDeepSeek
+  callDeepSeek,
+  getTextModel
 }

@@ -1,0 +1,86 @@
+<view class="page">
+  <view class="photo-wrap" wx:if="{{photoUrl}}">
+    <image class="photo" src="{{photoUrl}}" mode="aspectFit" />
+  </view>
+
+  <view class="section-title">这张照片，你还记得什么？</view>
+
+  <view class="form-card">
+    <view class="field">
+      <view class="label">1. 大约是哪一年？</view>
+      <picker mode="selector" range="{{yearOptions}}" bindchange="onYearModeChange">
+        <view class="picker-hint">{{yearMode}}</view>
+      </picker>
+      <input
+        wx:if="{{yearMode !== '记不清'}}"
+        class="input"
+        placeholder="如：1983、80年代、约1990年"
+        value="{{approxYear}}"
+        bindinput="onYearInput"
+      />
+    </view>
+
+    <view class="field">
+      <view class="label">2. 照片里都是谁？</view>
+      <input class="input" placeholder="如：爸爸、我、邻居王叔叔" value="{{people}}" bindinput="onPeopleInput" />
+    </view>
+
+    <view class="field">
+      <view class="label">3. 看到这张照片，你最先想起什么？</view>
+      <textarea
+        class="memory-input"
+        placeholder="像聊天一样，告诉我你记得的事……"
+        value="{{memory}}"
+        bindinput="onMemoryInput"
+        maxlength="800"
+        auto-height
+      />
+    </view>
+  </view>
+
+  <view class="extra-toggle" bindtap="onToggleExtra">
+    {{showExtra ? '收起补充' : '再补充一点记忆'}} ▾
+  </view>
+
+  <view class="form-card" wx:if="{{showExtra}}">
+    <view class="field">
+      <view class="label">地点（选填）</view>
+      <input class="input" placeholder="如：老家院子" value="{{location}}" bindinput="onLocationInput" />
+    </view>
+    <view class="field">
+      <view class="label">谁拍的（选填）</view>
+      <input class="input" placeholder="如：妈妈" value="{{photographer}}" bindinput="onPhotographerInput" />
+    </view>
+    <view class="field">
+      <view class="label">其他细节（选填）</view>
+      <textarea class="note-input" value="{{extraDetail}}" bindinput="onExtraInput" maxlength="300" />
+    </view>
+  </view>
+
+  <view class="style-section">
+    <view class="label">故事风格</view>
+    <view class="style-tags">
+      <view
+        class="style-tag {{storyStyle === item.id ? 'active' : ''}}"
+        wx:for="{{storyStyles}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onStyleTap"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
+  <button class="submit-btn" loading="{{loading}}" disabled="{{loading || !canCreate}}" bindtap="onSubmit">
+    {{canCreate ? '帮我把这段记忆写下来' : '体验额度已用完'}}
+  </button>
+
+  <view class="loading-overlay" wx:if="{{generating}}">
+    <view class="loading-card">
+      <view class="loading-title">正在整理这段旧时光……</view>
+      <view class="step {{loadingStep >= 0 ? 'done' : ''}}">{{loadingStep >= 0 ? '✓' : '○'}} 把你提供的记忆整理清楚</view>
+      <view class="step {{loadingStep >= 1 ? 'done' : ''}}">{{loadingStep >= 1 ? '✓' : '○'}} 保留真实的人和事</view>
+      <view class="step {{loadingStep >= 2 ? 'done' : ''}}">{{loadingStep >= 2 ? '✓' : '○'}} 把它写成一段值得留下的故事</view>
+      <view class="loading-note">我不会替你编造照片里没有说过的往事。</view>
+    </view>
+  </view>
+</view>

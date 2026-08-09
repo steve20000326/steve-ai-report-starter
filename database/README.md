@@ -39,15 +39,27 @@
 
 ---
 
-## reports（Day4 更新）
+## reports（Day4 更新，Day5.5 增加 product）
 
 新增字段：
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
+| product | string | 工作台产品 ID：`growth` / `college` / `memory`（Day5.5） |
 | eventDate | string | 事件日期 YYYY-MM-DD（时间线排序用） |
 | warmSentence | string | 温暖纪念语 |
 | confidenceNote | string | 置信说明 |
+
+**product 与 type 映射：**
+
+| product | type（Report Engine） |
+|---------|-------------------------|
+| growth | child_growth |
+| college | college_choice |
+| memory | old_photo_story |
+
+旧数据无 `product` 字段时，按 `type` 推断，保持兼容。
+
 
 input 统一结构：
 
@@ -81,3 +93,30 @@ input 统一结构：
 ## 已废弃
 
 - `quotas` 集合：额度在 `users.freeQuota`
+
+---
+
+## old_photo_story（Day5 新增）
+
+业务 type: `old_photo_story`
+
+详见 `database/old_photo_story_prompt_v1.md`
+
+**输入 input：**
+```json
+{
+  "photoFileId": "",
+  "approxYear": "",
+  "people": "",
+  "location": "",
+  "memory": "",
+  "extraDetail": "",
+  "storyStyle": "warm"
+}
+```
+
+**输出字段：** subtitle, opening, story, memoryDetails, closing, shareExcerpt, factNote
+
+**Quota：** 第一篇老照片故事免费，之后消耗 `users.freeQuota`
+
+**照片存储：** 微信云存储 `old-photos/`，仅存 cloudFileId，禁止 base64 入库

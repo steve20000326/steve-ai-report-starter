@@ -1,0 +1,149 @@
+.page {
+  min-height: 100vh;
+  padding: 32rpx;
+  box-sizing: border-box;
+  background: #f7f7f3;
+}
+
+.loading,
+.empty-state {
+  text-align: center;
+  padding: 120rpx 48rpx;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #26352c;
+  margin-bottom: 20rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #7c857f;
+  line-height: 1.8;
+  margin-bottom: 48rpx;
+}
+
+.btn-primary {
+  height: 92rpx;
+  line-height: 92rpx;
+  background: #65a87c !important;
+  color: #fff !important;
+  border-radius: 48rpx;
+  font-size: 30rpx;
+  max-width: 400rpx;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 48rpx;
+}
+
+.section-head {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #26352c;
+}
+
+.month-group {
+  margin-bottom: 24rpx;
+}
+
+.month-label {
+  font-size: 26rpx;
+  color: #7c857f;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+}
+
+.record-item {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+}
+
+.record-item.weak {
+  opacity: 0.75;
+}
+
+.record-item.failed {
+  border-left: 6rpx solid #c47a6e;
+}
+
+.record-date {
+  font-size: 24rpx;
+  color: #7c857f;
+  margin-bottom: 8rpx;
+}
+
+.record-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #26352c;
+  line-height: 1.5;
+}
+
+.record-keywords {
+  margin-top: 16rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.kw {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  background: #edf5ef;
+  color: #65a87c;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.memory-item {
+  display: flex;
+  gap: 20rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+}
+
+.thumb.placeholder {
+  background: #f4f0e8;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.year {
+  font-size: 24rpx;
+  color: #9a7553;
+  margin-bottom: 6rpx;
+}
+
+.title {
+  font-size: 28rpx;
+  color: #26352c;
+  font-weight: 500;
+}
+
+.date {
+  font-size: 22rpx;
+  color: #7c857f;
+  margin-top: 8rpx;
+}

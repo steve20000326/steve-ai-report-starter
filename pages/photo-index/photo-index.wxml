@@ -1,0 +1,22 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">照片里的那一年</view>
+    <view class="hero-line">有些故事，</view>
+    <view class="hero-line">藏在一张老照片里。</view>
+    <view class="hero-sub">
+      告诉我几句记忆，
+      帮你把它好好留下来。
+    </view>
+    <button class="main-cta" bindtap="onChoosePhoto">+ 选一张老照片</button>
+  </view>
+
+  <view class="example-card">
+    <view class="example-year">1983 · 夏天</view>
+    <view class="example-title">爸爸买回家的第一辆自行车</view>
+    <view class="example-preview">
+      那天下午，阳光落在院子的水泥地上。爸爸推着那辆崭新的二八大杠进院，我踮着脚摸车把，心里像是装下了一整个夏天的风……
+    </view>
+  </view>
+
+  <view class="link-history" bindtap="onViewHistory">我的旧时光 →</view>
+</view>

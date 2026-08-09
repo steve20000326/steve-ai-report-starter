@@ -23,6 +23,18 @@ const CHILD_GROWTH_OUTPUT_SCHEMA = {
   summary: ''
 }
 
+/** old_photo_story V1 输出结构 */
+const OLD_PHOTO_STORY_OUTPUT_SCHEMA = {
+  title: '',
+  subtitle: '',
+  opening: '',
+  story: '',
+  memoryDetails: [],
+  closing: '',
+  shareExcerpt: '',
+  factNote: ''
+}
+
 const PRODUCT_TYPES = {
   CHILD_GROWTH: 'child_growth',
   OLD_PHOTO_STORY: 'old_photo_story',
@@ -67,6 +79,7 @@ function isCollectionMissingError(err) {
 module.exports = {
   REPORT_OUTPUT_SCHEMA,
   CHILD_GROWTH_OUTPUT_SCHEMA,
+  OLD_PHOTO_STORY_OUTPUT_SCHEMA,
   PRODUCT_TYPES,
   REPORT_STATUS,
   COLLECTIONS,

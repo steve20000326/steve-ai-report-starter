@@ -4,8 +4,14 @@
 
 const {
   REPORT_OUTPUT_SCHEMA,
-  CHILD_GROWTH_OUTPUT_SCHEMA
+  OLD_PHOTO_STORY_OUTPUT_SCHEMA
 } = require('./reportEngine')
+
+const STORY_STYLE_LABELS = {
+  documentary: '平实纪实',
+  warm: '温暖回忆',
+  legacy: '写给下一代'
+}
 
 const DEFAULT_TEMPLATES = {
   child_growth: {
@@ -40,12 +46,36 @@ const DEFAULT_TEMPLATES = {
   },
   old_photo_story: {
     type: 'old_photo_story',
-    name: '老照片故事',
+    name: 'AI老照片故事',
     enabled: true,
-    systemPrompt:
-      '你是一名擅长叙事的老照片故事作家，能够根据用户提供的信息，生成有情感、有画面感的故事化报告。',
-    userPromptTemplate:
-      '请根据以下信息生成老照片故事报告：\n姓名：{{name}}\n年龄：{{age}}\n照片/事件描述：{{description}}'
+    version: 'v1',
+    systemPrompt: [
+      '你是一名老照片故事整理者，帮助用户把真实记忆整理成值得留下的文字。',
+      '',
+      '最高优先规则：',
+      '1. 只能基于用户提供的事实进行故事整理，绝对禁止自行新增：年份、地点、人物身份、人物关系、具体事件、具体对话、家庭经历、历史背景事实。',
+      '2. 如果用户没有提供，不要猜、不要补全、不要编造。',
+      '3. 允许：语言整理、结构组织、叙事润色、适量情绪表达、合理的非事实性过渡句（如「那时候的日子，总是过得慢一些」）。',
+      '4. 不能为了「感人」而编故事。',
+      '5. story 正文约 400-700 中文字，适合移动端阅读。',
+      '6. factNote 需说明：本故事仅基于用户提供的记忆整理，未添加未提及的事实。',
+      '',
+      '使用简体中文。'
+    ].join('\n'),
+    userPromptTemplate: [
+      '请根据以下用户提供的记忆，整理一段老照片故事。',
+      '写作风格：{{storyStyleLabel}}',
+      '',
+      '【用户提供的信息】',
+      '大约年份：{{approxYear}}',
+      '照片里都是谁：{{people}}',
+      '{{locationLine}}',
+      '{{photographerLine}}',
+      '核心记忆：{{memory}}',
+      '{{extraLine}}',
+      '',
+      '请严格基于以上信息整理，不要添加用户未提及的事实。'
+    ].join('\n')
   },
   career_report: {
     type: 'career_report',
@@ -70,6 +100,9 @@ function getOutputSchema(type) {
   if (type === 'child_growth') {
     return CHILD_GROWTH_OUTPUT_SCHEMA
   }
+  if (type === 'old_photo_story') {
+    return OLD_PHOTO_STORY_OUTPUT_SCHEMA
+  }
   return REPORT_OUTPUT_SCHEMA
 }
 
@@ -88,6 +121,19 @@ function getOutputFieldDocs(type) {
     ].join('\n')
   }
 
+  if (type === 'old_photo_story') {
+    return [
+      '- title: 故事标题（15字以内）',
+      '- subtitle: 副标题，如年代/季节感（20字以内）',
+      '- opening: 开篇段落（80-120字）',
+      '- story: 正文故事（400-700中文字）',
+      '- memoryDetails: 用户记忆要点数组，2-5条，只复述用户提供的信息',
+      '- closing: 收束段落（60-100字）',
+      '- shareExcerpt: 分享摘要（40-80字）',
+      '- factNote: 事实说明，声明未添加未提及的内容'
+    ].join('\n')
+  }
+
   return [
     '- title: 报告标题（15字以内）',
     '- summary: 报告摘要（100-200字）',
@@ -103,7 +149,11 @@ function buildPromptMessages(template, input, type) {
 
   const enrichedInput = Object.assign({}, input, {
     eventTagLine: input.eventTag ? '【标签】' + input.eventTag : '',
-    parentNoteLine: input.parentNote ? '【家长补充】' + input.parentNote : ''
+    parentNoteLine: input.parentNote ? '【家长补充】' + input.parentNote : '',
+    storyStyleLabel: STORY_STYLE_LABELS[input.storyStyle] || STORY_STYLE_LABELS.warm,
+    locationLine: input.location ? '地点：' + input.location : '',
+    photographerLine: input.photographer ? '拍摄者：' + input.photographer : '',
+    extraLine: input.extraDetail ? '补充细节：' + input.extraDetail : ''
   })
 
   const systemPrompt = [

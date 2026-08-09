@@ -13,7 +13,12 @@ const ALLOWED_EVENTS = [
   'report_success',
   'report_view',
   'share_card_generate',
-  'feedback_submit'
+  'feedback_submit',
+  'photo_upload',
+  'memory_form_start',
+  'memory_form_submit',
+  'story_generate_success',
+  'story_view'
 ]
 
 exports.main = async (event) => {

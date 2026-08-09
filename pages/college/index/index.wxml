@@ -1,0 +1,20 @@
+<view class="page">
+  <view class="hero">
+    <view class="title">{{name}}</view>
+    <view class="subtitle">帮助家庭看清成绩、专业与志愿方向</view>
+  </view>
+
+  <view class="feature-list">
+    <view class="feature" wx:for="{{features}}" wx:key="*this">{{item}}</view>
+  </view>
+
+  <view class="placeholder-card">
+    <view class="placeholder-title">功能开发中</view>
+    <view class="placeholder-desc">
+      高考志愿规划助手即将上线。
+      当前版本仅提供入口占位，不包含业务功能。
+    </view>
+  </view>
+
+  <button class="btn-back" bindtap="onBackHome">返回工具大厅</button>
+</view>

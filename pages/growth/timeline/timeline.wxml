@@ -1,0 +1,25 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{error}}" class="empty">{{error}}</view>
+  <view wx:elif="{{!reports.length}}" class="empty">暂无成长记录</view>
+
+  <view wx:else class="timeline">
+    <view
+      class="timeline-item {{item.isGenerating ? 'weak' : ''}} {{item.isFailed ? 'failed' : ''}}"
+      wx:for="{{reports}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="onReportTap"
+    >
+      <view class="dot {{item.isFailed ? 'dot-failed' : ''}}"></view>
+      <view class="content">
+        <view class="title">{{item.displayTitle}}</view>
+        <view class="summary">{{item.displaySubtitle}}</view>
+        <view class="meta">
+          <text>{{item.timeText}}</text>
+          <text class="status {{item.isFailed ? 'status-failed' : ''}}">{{item.statusText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

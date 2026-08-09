@@ -1,0 +1,30 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+
+  <view wx:elif="{{!hasData}}" class="empty">
+    <view class="empty-title">旧时光还没有写下第一篇</view>
+    <view class="empty-desc">
+      翻翻相册，
+      找一张你舍不得丢掉的照片。
+    </view>
+    <button class="btn-primary" bindtap="onCreateFirst">写下第一段故事</button>
+  </view>
+
+  <view wx:else class="list">
+    <view
+      class="item"
+      wx:for="{{stories}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="onStoryTap"
+    >
+      <image class="thumb" src="{{item.thumbUrl}}" mode="aspectFill" wx:if="{{item.thumbUrl}}" />
+      <view class="thumb placeholder" wx:else></view>
+      <view class="info">
+        <view class="year">{{item.approxYear}}</view>
+        <view class="title">{{item.displayTitle}}</view>
+        <view class="date">{{item.dateText}}</view>
+      </view>
+    </view>
+  </view>
+</view>

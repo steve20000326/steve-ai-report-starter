@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="page-intro">
+    <view class="intro-title">为孩子建立成长档案</view>
+    <view class="intro-desc">姓名必填，生日或年龄至少填一项。</view>
+  </view>
+
+  <view class="form">
+    <view class="form-item">
+      <view class="label">姓名 <text class="required">*</text></view>
+      <input class="input" placeholder="孩子姓名或小名" value="{{name}}" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-item">
+      <view class="label">生日</view>
+      <picker mode="date" value="{{birthday}}" bindchange="onBirthdayChange">
+        <view class="picker">{{birthday || '选择生日（与年龄二选一）'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">年龄</view>
+      <input
+        class="input"
+        type="number"
+        placeholder="填写年龄（与生日二选一）"
+        value="{{age}}"
+        bindinput="onAgeInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="label">性别 <text class="hint">选填</text></view>
+      <picker mode="selector" range="{{genderOptions}}" bindchange="onGenderChange">
+        <view class="picker">{{gender || '选填'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <button class="submit-btn" loading="{{loading}}" bindtap="onSubmit">建立孩子档案</button>
+</view>

@@ -5,7 +5,8 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const COLLECTION = 'feedback'
 
-const ALLOWED_RATINGS = ['helpful', 'normal', 'not_helpful']
+const CHILD_RATINGS = ['helpful', 'normal', 'not_helpful']
+const PHOTO_RATINGS = ['very_similar', 'mostly_similar', 'not_similar']
 
 exports.main = async (event) => {
   const wxContext = cloud.getWXContext()
@@ -20,7 +21,7 @@ exports.main = async (event) => {
     return { success: false, message: '缺少 reportId' }
   }
 
-  if (!rating || ALLOWED_RATINGS.indexOf(rating) === -1) {
+  if (!rating) {
     return { success: false, message: '请选择反馈评价' }
   }
 
@@ -33,10 +34,20 @@ exports.main = async (event) => {
       return { success: false, message: '报告不存在或无权访问' }
     }
 
+    const allowed =
+      report.type === 'old_photo_story'
+        ? PHOTO_RATINGS.indexOf(rating) !== -1
+        : CHILD_RATINGS.indexOf(rating) !== -1
+
+    if (!allowed) {
+      return { success: false, message: '无效的反馈选项' }
+    }
+
     await db.collection(COLLECTION).add({
       data: {
         userId: openid,
         reportId,
+        reportType: report.type || 'child_growth',
         rating,
         comment: commentText,
         createdAt: Date.now()

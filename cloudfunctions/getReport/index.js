@@ -52,6 +52,13 @@ exports.main = async (event) => {
         warmSentence: report.warmSentence || (report.content && report.content.warmSentence) || '',
         confidenceNote:
           report.confidenceNote || (report.content && report.content.confidenceNote) || '',
+        subtitle: report.subtitle || (report.content && report.content.subtitle) || '',
+        opening: report.opening || (report.content && report.content.opening) || '',
+        story: report.story || (report.content && report.content.story) || '',
+        memoryDetails: report.memoryDetails || (report.content && report.content.memoryDetails) || [],
+        closing: report.closing || (report.content && report.content.closing) || '',
+        shareExcerpt: report.shareExcerpt || (report.content && report.content.shareExcerpt) || '',
+        factNote: report.factNote || (report.content && report.content.factNote) || '',
         eventDate: report.eventDate || (report.input && report.input.eventDate) || '',
         childId: report.childId || '',
         status: report.status,

@@ -23,6 +23,12 @@ function initCloud() {
       cloudInstance
         .init()
         .then(function () {
+          // 同步初始化默认 wx.cloud，兼容直接使用 wx.cloud 的 API
+          try {
+            wx.cloud.init({ env: ENV_ID, traceUser: true })
+          } catch (e) {
+            /* 部分基础库 Cloud 实例模式下可忽略 */
+          }
           resolve(cloudInstance)
         })
         .catch(function (err) {

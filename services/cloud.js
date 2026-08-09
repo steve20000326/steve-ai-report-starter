@@ -12,18 +12,34 @@ const CLOUD_FUNCTIONS = {
   SUBMIT_FEEDBACK: 'submitFeedback'
 }
 
+function extractCloudCallDetail(msg) {
+  if (!msg) return ''
+  const errMsgMatch = msg.match(/errMsg:\s*(.+?)(?:\s*\||$)/i)
+  if (errMsgMatch) return errMsgMatch[1].trim()
+  const failMatch = msg.match(/cloud\.callFunction:fail\s+(.+)/i)
+  return failMatch ? failMatch[1].trim() : ''
+}
+
 function normalizeCloudError(err, name) {
   const msg = (err && (err.message || err.errMsg)) || String(err || '')
+  const detail = extractCloudCallDetail(msg)
+  const combined = detail ? msg + ' ' + detail : msg
 
-  if (msg.indexOf('FUNCTION_NOT_FOUND') !== -1 || msg.indexOf('-501000') !== -1) {
-    return new Error('云函数「' + name + '」未部署，请在开发者工具右键上传并部署')
+  if (
+    combined.indexOf('FUNCTION_NOT_FOUND') !== -1 ||
+    combined.indexOf('-501000') !== -1
+  ) {
+    return new Error('云函数「' + name + '」未部署，请在开发者工具右键「上传并部署：云端安装依赖」')
   }
 
-  if (msg.indexOf('Cannot find module') !== -1) {
-    return new Error('云函数「' + name + '」需重新部署（缺少依赖文件）')
+  if (combined.indexOf('Cannot find module') !== -1) {
+    return new Error('云函数「' + name + '」需重新部署（缺少依赖文件）。请先运行 bash cloudfunctions/sync-common.sh')
   }
 
   if (msg.indexOf('cloud.callFunction:fail') !== -1) {
+    if (detail) {
+      return new Error('云函数「' + name + '」调用失败：' + detail)
+    }
     return new Error('云函数「' + name + '」调用失败，请检查是否已部署')
   }
 

@@ -11,12 +11,12 @@ const EVENTS = {
   FEEDBACK_SUBMIT: 'feedback_submit'
 }
 
-function trackEvent(event, metadata) {
+function trackEvent(event, metadata, productType) {
   if (!event) return Promise.resolve()
 
   return callCloud(CLOUD_FUNCTIONS.TRACK_EVENT, {
     event,
-    productType: 'child_growth',
+    productType: productType || 'child_growth',
     metadata: metadata || {}
   }).catch(function (err) {
     console.warn('trackEvent skipped:', err.message)

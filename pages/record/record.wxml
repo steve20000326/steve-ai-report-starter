@@ -1,0 +1,58 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading">加载中…</view>
+
+  <view wx:elif="{{!hasData}}" class="empty-state">
+    <view class="empty-title">还没有任何记录</view>
+    <view class="empty-desc">
+      去工具大厅选一个工具，
+      开始记录成长瞬间或家庭故事吧。
+    </view>
+    <button class="btn-primary" bindtap="onGoHome">去工具大厅</button>
+  </view>
+
+  <view wx:else>
+    <view class="section" wx:if="{{hasGrowth}}">
+      <view class="section-head">
+        <text class="section-title">儿童成长</text>
+      </view>
+      <view class="month-group" wx:for="{{growthGroups}}" wx:key="month">
+        <view class="month-label">{{item.month}}</view>
+        <view
+          class="record-item {{record.isFailed ? 'failed' : ''}} {{record.isGenerating ? 'weak' : ''}}"
+          wx:for="{{item.items}}"
+          wx:for-item="record"
+          wx:key="_id"
+          data-id="{{record._id}}"
+          bindtap="onGrowthTap"
+        >
+          <view class="record-date">{{record.dateText}}</view>
+          <view class="record-title">{{record.displayTitle}}</view>
+          <view class="record-keywords" wx:if="{{record.keywords.length}}">
+            <text class="kw" wx:for="{{record.keywords}}" wx:key="*this">{{item}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{hasMemory}}">
+      <view class="section-head">
+        <text class="section-title">老照片故事</text>
+      </view>
+      <view
+        class="memory-item"
+        wx:for="{{memoryStories}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onMemoryTap"
+      >
+        <image class="thumb" src="{{item.thumbUrl}}" mode="aspectFill" wx:if="{{item.thumbUrl}}" />
+        <view class="thumb placeholder" wx:else></view>
+        <view class="info">
+          <view class="year">{{item.approxYear}}</view>
+          <view class="title">{{item.displayTitle}}</view>
+          <view class="date">{{item.dateText}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

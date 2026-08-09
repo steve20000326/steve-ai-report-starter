@@ -2,8 +2,17 @@
  * 解析并展示云调用错误
  */
 
+function extractCloudCallDetail(msg) {
+  if (!msg) return ''
+  const errMsgMatch = msg.match(/errMsg:\s*(.+?)(?:\s*\||$)/i)
+  if (errMsgMatch) return errMsgMatch[1].trim()
+  const failMatch = msg.match(/cloud\.callFunction:fail\s+(.+)/i)
+  return failMatch ? failMatch[1].trim() : ''
+}
+
 function parseCloudError(err, functionName) {
   const raw = (err && (err.message || err.errMsg)) || String(err || '未知错误')
+  const detail = extractCloudCallDetail(raw)
 
   if (raw.indexOf('appid missing') !== -1) {
     return {
@@ -48,13 +57,31 @@ function parseCloudError(err, functionName) {
     }
   }
 
+  if (raw.indexOf('未部署') !== -1) {
+    return {
+      title: '云函数未部署',
+      content: raw
+    }
+  }
+
+  if (raw.indexOf('调用失败') !== -1) {
+    return {
+      title: '云函数调用失败',
+      content:
+        raw +
+        '\n\n请在微信开发者工具：\n1. 运行 bash cloudfunctions/sync-common.sh\n2. 右键 cloudfunctions/createReport → 上传并部署：云端安装依赖\n3. 云开发控制台确认环境为 cloud1-d5gy8cytj61fdbfdd'
+    }
+  }
+
   if (raw.indexOf('cloud.callFunction:fail') !== -1) {
     return {
       title: '云函数调用失败',
       content:
         '云函数「' +
         (functionName || '') +
-        '」调用失败。\n\n请确认已部署该云函数，且云开发环境正常。'
+        '」调用失败' +
+        (detail ? '：' + detail : '') +
+        '。\n\n请确认已部署该云函数，且云开发环境正常。'
     }
   }
 

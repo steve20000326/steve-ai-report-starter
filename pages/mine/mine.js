@@ -4,13 +4,15 @@ const { listReports } = require('../../services/report')
 const { daysBetween } = require('../../utils/util')
 const { showCloudError } = require('../../utils/showError')
 const { CLOUD_FUNCTIONS } = require('../../services/cloud')
+const { TOOLS, ROUTES } = require('../../constants/tools')
 
 const MENU_ITEMS = [
-  { id: 'children', title: '孩子档案', url: '/pages/index/index', tab: true },
-  { id: 'album', title: '成长纪念册', action: 'coming' },
-  { id: 'reports', title: '我的报告', url: '/pages/history/history', tab: true },
+  { id: 'home', title: '工具大厅', url: ROUTES.home, tab: true },
+  { id: 'growth', title: TOOLS[1].name, url: TOOLS[1].route },
+  { id: 'memory', title: TOOLS[2].name, url: TOOLS[2].route },
+  { id: 'college', title: TOOLS[0].name, url: TOOLS[0].route },
+  { id: 'record', title: '全部记录', url: ROUTES.record, tab: true },
   { id: 'quota', title: '体验额度', action: 'quota' },
-  { id: 'privacy', title: '隐私与数据', action: 'coming' },
   { id: 'about', title: '关于产品', action: 'about' }
 ]
 
@@ -47,7 +49,7 @@ Page({
         showOnce(err, CLOUD_FUNCTIONS.LIST_CHILDREN)
         return { list: [] }
       }),
-      listReports({ type: 'child_growth', pageSize: 50 }).catch((err) => {
+      listReports({ pageSize: 50 }).catch((err) => {
         showOnce(err, CLOUD_FUNCTIONS.LIST_REPORTS)
         return { list: [], total: 0 }
       })
@@ -83,7 +85,7 @@ Page({
       const total = q ? q.totalQuota : 3
       wx.showModal({
         title: '体验额度',
-        content: '当前剩余 ' + remaining + ' / ' + total + ' 次免费整理机会。\n\n完整版开放后可无限记录成长瞬间。',
+        content: '当前剩余 ' + remaining + ' / ' + total + ' 次免费体验机会。\n\n完整版开放后可继续使用全部工具。',
         showCancel: false
       })
       return
@@ -92,14 +94,9 @@ Page({
     if (action === 'about') {
       wx.showModal({
         title: '关于产品',
-        content: 'AI儿童成长档案\n记录成长小事，看见孩子一点点长大。',
+        content: '稻歌AI实验室\n帮助家庭解决教育成长、高考规划与家庭记忆整理。',
         showCancel: false
       })
-      return
-    }
-
-    if (action === 'coming') {
-      wx.showToast({ title: '即将开放', icon: 'none' })
       return
     }
 

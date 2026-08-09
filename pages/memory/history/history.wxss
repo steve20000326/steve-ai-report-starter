@@ -1,0 +1,80 @@
+.page {
+  min-height: 100vh;
+  padding: 32rpx;
+  background: #F4F0E8;
+  box-sizing: border-box;
+}
+
+.loading {
+  text-align: center;
+  padding: 120rpx;
+  color: #8B857D;
+}
+
+.empty {
+  text-align: center;
+  padding: 120rpx 48rpx;
+}
+
+.empty-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #332E28;
+  margin-bottom: 20rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #8B857D;
+  line-height: 1.8;
+  margin-bottom: 48rpx;
+}
+
+.btn-primary {
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #9A7553 !important;
+  color: #fff !important;
+  border-radius: 44rpx;
+  max-width: 400rpx;
+  margin: 0 auto;
+}
+
+.item {
+  display: flex;
+  background: #FFFCF6;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  gap: 20rpx;
+}
+
+.thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.thumb.placeholder {
+  background: #EDE6DA;
+}
+
+.year {
+  font-size: 24rpx;
+  color: #9A7553;
+  margin-bottom: 6rpx;
+}
+
+.title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #332E28;
+  line-height: 1.4;
+}
+
+.date {
+  font-size: 22rpx;
+  color: #8B857D;
+  margin-top: 8rpx;
+}

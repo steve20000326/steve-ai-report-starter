@@ -1,0 +1,74 @@
+<view class="page">
+  <!-- 第一屏 -->
+  <view class="hero">
+    <view class="hero-title">AI儿童成长档案</view>
+    <view class="hero-line">记录成长小事，</view>
+    <view class="hero-line">看见孩子一点点长大。</view>
+    <view class="hero-sub">
+      AI帮你整理那些容易被忘记，
+      却值得留下的成长瞬间。
+    </view>
+    <button class="main-cta" bindtap="onMainCTA">+ 记录一个成长瞬间</button>
+  </view>
+
+  <!-- 无孩子：温暖空状态 -->
+  <view wx:if="{{!loading && !hasChild}}" class="empty-card">
+    <view class="empty-title">先为孩子建立一份成长档案</view>
+    <view class="empty-desc">
+      以后每一次小进步、第一次、
+      一句让你惊喜的话，
+      都会慢慢留在这里。
+    </view>
+    <button class="btn-outline" bindtap="onAddChild">建立孩子档案</button>
+  </view>
+
+  <!-- 有孩子：卡片列表 -->
+  <view wx:if="{{hasChild}}" class="section">
+    <view class="section-label">我的孩子</view>
+    <view class="child-list">
+      <view class="child-card" wx:for="{{children}}" wx:key="_id">
+        <view class="child-header">
+          <view class="child-name">{{item.name}}</view>
+          <view class="child-age">{{item.ageText}}</view>
+        </view>
+        <view class="child-stats">
+          <text>本月记录 {{item.monthCount}} 次</text>
+          <text class="dot">·</text>
+          <text>最近：{{item.recentTitle}}</text>
+        </view>
+        <view class="child-actions">
+          <button
+            class="btn-record"
+            data-id="{{item._id}}"
+            data-name="{{item.name}}"
+            bindtap="onCreateRecord"
+          >
+            记录今天
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 示例模块 -->
+  <view class="example-card">
+    <view class="example-title">一条记录，会变成什么？</view>
+    <view class="example-block">
+      <view class="example-label">今天发生：</view>
+      <view class="example-text">小宇第一次主动帮奶奶收拾碗筷。</view>
+    </view>
+    <view class="example-block highlight">
+      <view class="example-label">AI帮你看见：</view>
+      <view class="example-text">
+        这件小事背后，可能正在萌芽的是主动承担和关心他人。
+      </view>
+    </view>
+    <view class="example-keywords">
+      <text class="kw-label">成长关键词：</text>
+      <text class="kw-tag">责任感</text>
+      <text class="kw-tag">同理心</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-hint">加载中…</view>
+</view>

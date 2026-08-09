@@ -1,16 +1,32 @@
 {
   "pages": [
+    "pages/home/home",
+    "pages/record/record",
+    "pages/mine/mine",
+    "pages/growth/index/index",
+    "pages/growth/create/create",
+    "pages/growth/report/report",
+    "pages/growth/timeline/timeline",
+    "pages/growth/child-add/child-add",
+    "pages/college/index/index",
+    "pages/memory/index/index",
+    "pages/memory/create/create",
+    "pages/memory/story/story",
+    "pages/memory/history/history",
     "pages/index/index",
-    "pages/child-add/child-add",
     "pages/create/create",
     "pages/report/report",
     "pages/timeline/timeline",
+    "pages/child-add/child-add",
     "pages/history/history",
-    "pages/mine/mine"
+    "pages/photo-index/photo-index",
+    "pages/photo-create/photo-create",
+    "pages/story/story",
+    "pages/photo-history/photo-history"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F7F7F3",
-    "navigationBarTitleText": "AI儿童成长档案",
+    "navigationBarTitleText": "稻歌AI实验室",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#F7F7F3"
   },
@@ -21,14 +37,14 @@
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/index/index",
-        "text": "首页",
+        "pagePath": "pages/home/home",
+        "text": "工具",
         "iconPath": "assets/icons/home.png",
         "selectedIconPath": "assets/icons/home-active.png"
       },
       {
-        "pagePath": "pages/history/history",
-        "text": "成长记录",
+        "pagePath": "pages/record/record",
+        "text": "记录",
         "iconPath": "assets/icons/history.png",
         "selectedIconPath": "assets/icons/history-active.png"
       },
@@ -42,7 +58,6 @@
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents",
   "permission": {
     "scope.writePhotosAlbum": {
       "desc": "用于保存成长卡片到相册"
